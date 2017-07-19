@@ -1,0 +1,116 @@
+.goods{
+	width:699px;
+	float:left;
+}
+.goods_text{
+	padding:10px 20px;
+}
+.pruduct{
+	width:223px;
+	float:left;
+	color:#333333;
+	margin-right:10px;
+	margin-top:10px;
+}
+.address{
+	width:183px;
+	float:left;
+	color:#333333;
+	margin-right:10px;
+	margin-top:10px;
+    background-color:#EFEFEF;
+    border:1px solid green;
+    
+}
+.address a:hover{
+    border:2px solid green;
+}
+.add{
+	width:183px;
+    height:153px;
+	float:left;
+	
+	margin-right:10px;
+	margin-top:10px;
+    background-color:darkgreen;
+    border:1px solid green;
+    font-size:medium;
+   
+}
+.add1{
+	
+	
+	margin-right:10px;
+	margin-top:30px;
+    align-items:center;
+    align-self:center;
+   
+    
+   
+}
+.addressbar{
+    width:183px;
+	float:left;
+	color:#333333;
+	margin-right:10px;
+	margin-top:10px;
+    background-color:#307172;
+}
+.name{
+	margin-top:10px;
+	font-size:16px;
+	font-weight:bold;
+}
+.price{
+	margin-top:10px;
+	font-size:16px;
+	margin-bottom:10px;
+}
+.butnAdd{
+	width:44px;
+	height:10px;
+	font-size:10px;
+	font-weight:bold;
+	padding:4px 8px;
+	border-radius:5px;
+	background-color:#333333;
+}
+.butndel{
+	width:34px;
+	height:14px;
+	font-size:10px;
+	font-weight:bold;
+	padding:4px 8px;
+	border-radius:5px;
+	background-color:#333333;
+    float:right;
+    margin-right:10px;
+    margin-bottom:10px;
+}
+.butndel a:hover
+{
+    border:2px solid green;
+}
+.butndel1{
+	width:74px;
+	height:34px;
+	font-size:33px;
+	
+	
+	
+	/*background-color:#333333;*/
+    float:right;
+    margin-right:10px;
+    margin-bottom:10px;
+    color:cornflowerblue;
+}
+.goods1 div{ background-color:#5A362D; }
+.goods2 div{ background-color:#9D262C; }
+.goods3 div{ background-color:#C7810D; }
+.goods4 div{ background-color:#680035; }
+.goods5 div{ background-color:#275A87; }
+.goods6 div{ background-color:#679E3D; }
+a{
+	color:#ffffff;
+	text-decoration:none;
+}

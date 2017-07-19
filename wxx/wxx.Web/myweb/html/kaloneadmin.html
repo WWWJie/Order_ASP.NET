@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>管理人员信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <style type="text/css">
+        .btabs
+        {
+            border: 1px solid #8DB2E3;
+            font-size: 12px;
+            height: 31px;
+            list-style-type: none;
+            width: 100.2%;
+            background-color: #E0ECFF;
+        }
+    </style>
+    <script src="../../JS1/easyUI/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="../../JS1/easyUI/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="../../JS1/easyUI/locale/easyui-lang-zh_CN.js" type="text/javascript"></script>
+    <script src="../../JS1/ljxpage.js" type="text/javascript"></script>
+    <link href="../../JS1/easyUI/themes/default/easyui.css" rel="stylesheet" type="text/css" /> 
+    <link href="../../JS1/easyUI/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="../../JS1/css/default.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+       
+        $(document).ready(function () {
+          
+            //定义功能按钮是否可见,如果不需要，可以将如下函数屏蔽
+            setbutton();
+        });
+
+        //弹出信息窗口 title:标题 msgString:提示信息 msgType:信息类型 [error,info,question,warning]
+        function msgShow(title, msgString, msgType) {
+            $.messager.alert(title, msgString, msgType);
+        }
+        $(function () {
+            InitGird(0);
+            InitSearch();
+            $('#ljxwin').dialog({
+                closed: true,
+                title: '管理人员信息'
+            });
+            
+            
+        });
+
+        //初始化表格
+        function InitGird(parsend) {
+            $('#tab_list').datagrid({
+                title: '管理人员信息', //表格标题
+                url: '../../myweb/ashx/kaloneadmin.ashx?mysearch=' + parsend, //请求数据的页面
+                //   sortName: '产品名称', //排序字段
+                idField: 'id', //标识字段,主键
+                iconCls: '', //标题左边的图标
+                width: '100%', //宽度
+                singleSelect: true,
+                nowrap: false, //是否换行，True 就会把数据显示在一行里
+                striped: true, //True 奇偶行使用不同背景色
+                collapsible: false, //可折叠
+                sortOrder: 'desc', //排序类型
+                remoteSort: false, //定义是否从服务器给数据排序
+
+                columns: [[
+                          { field: 'userName', title: '人员名称', width: $(this).width() * 0.142857142857143, align: 'center' },
+                          { field: 'account', title: '帐号', width: $(this).width() * 0.142857142857143, align: 'center' },
+                          { field: 'password', title: '密码', width: $(this).width() * 0.142857142857143, align: 'center' },
+                          { field: 'phone', title: '联系电话', width: $(this).width() * 0.142857142857143, align: 'center' },
+                          { field: 'gender', title: '性别', width: $(this).width() * 0.142857142857143, align: 'center' },
+                          { field: 'category', title: '类别', width: $(this).width() * 0.142857142857143, align: 'center' },
+                          { field: 'role', title: '角色', width: $(this).width() * 0.142857142857143, align: 'center' }
+
+                ]],
+                onDblClickCell: function () {
+                    edit();
+                },
+                queryParams: { "action": "query" },
+                pagination: true, //是否开启分页
+                pageNumber: 1, //默认索引页
+                pageSize: 40, //默认一页数据条数
+                rownumbers: true //行号
+            });
+
+        }
+        //初始化搜索框
+        function InitSearch() {
+            $("#ipt_search").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab_list').datagrid('options').queryParams.search_type = name;
+                    $('#tab_list').datagrid('options').queryParams.search_value = val;
+                    $('#tab_list').datagrid('reload');
+                },
+                prompt: '请输入要查询的账号'
+            });
+        }
+
+        function closeljxwin() {
+            $('#ljxwin').dialog('close');
+        }
+        function add() {
+                        $('#userName').val('');
+            $('#account').val('');
+            $('#password').val('');
+            $('#phone').val('');
+            $('#gender').val('');
+            $('#category').val('');
+            $('#role').val('');
+            $('#new1').val('');
+            $('#new2').val('');
+
+            $('#HdId').val('');
+            $('#ljxwin').dialog('open');
+        }
+        function edit() {
+            var node = $('#tab_list').datagrid('getSelected');
+            if (node) {
+                $('#HdId').val(node.Id);
+
+                $.post('../../myweb/ashx/kaloneadmin.ashx?type=edit&Id=' + $('#HdId').val(), function (msg) {
+                    var str = msg.split('|');
+
+                                        $('#userName').val(str[1]);
+                    $('#account').val(str[2]);
+                    $('#password').val(str[3]);
+                    $('#phone').val(str[4]);
+                    $('#gender').val(str[5]);
+                    $('#category').val(str[6]);
+                    $('#role').val(str[7]);
+                    $('#new1').val(str[8]);
+                    $('#new2').val(str[9]);
+
+                });
+                $('#ljxwin').dialog('open');
+            } else {
+                msgShow('系统提示', '请选择要编辑的产品', 'error');
+            }
+        }
+        function del() {
+            var node = $('#tab_list').datagrid('getSelected');
+            if (node) {
+                $('#HdId').val(node.Id);
+
+                $.messager.confirm('系统提示', '删除后不可恢复，确定要删除？', function (i) {
+                    if (i) {
+                        $.post('../../myweb/ashx/kaloneadmin.ashx?type=del&Id=' + $('#HdId').val(), function (msg) {
+                            msgShow('系统提示', '恭喜，记录删除成功！', 'info');
+                            $('#tab_list').datagrid('reload');
+                        });
+                    }
+                })
+            } else {
+                msgShow('系统提示', '请选择要编辑的记录', 'error');
+            }
+        }
+        //添加/保存 信息
+        function saveData() {
+                            var userName = $('#userName').val();
+                var account = $('#account').val();
+                var password = $('#password').val();
+                var phone = $('#phone').val();
+                var gender = $('#gender').val();
+                var category = $('#category').val();
+                var role = $('#role').val();
+                var new1 = $('#new1').val();
+                var new2 = $('#new2').val();
+
+            var Id = $('#HdId').val();
+            $.post('../../myweb/ashx/kaloneadmin.ashx?type=save&Id=' + Id  + '&userName=' + encodeURI(userName) + '&account=' + encodeURI(account) + '&password=' + encodeURI(password) + '&phone=' + encodeURI(phone) + '&gender=' + encodeURI(gender) + '&category=' + encodeURI(category) + '&role=' + encodeURI(role) + '&new1=' + encodeURI(new1) + '&new2=' + encodeURI(new2), function (msg) {
+                msgShow('系统提示', '编辑成功', 'info');
+                $('#ljxwin').dialog('close');
+                $('#tab_list').datagrid('reload');
+            });
+        }
+
+    </script>
+</head>
+<body  style="background:white">
+    <form>
+    <input id="HdId" type="hidden" />
+    <!--工具栏-->
+    <div class="btabs">
+         <table width="100%">
+            <tr>
+                <td style="text-align: left;">
+                    <table>
+                        <tr>
+                            <td id="ljxfun5" >
+                                <div class="datagrid-btn-separator"></div>
+                                <a class="easyui-linkbutton" iconcls="icon-help" plain="true" href="#" target="_blank">帮助</a>
+                            </td>
+                            <td id="ljxfun1">
+                                <a class="easyui-linkbutton" iconcls="icon-add1" plain="true" onclick="add()">添加</a>
+                            </td>
+                            <td id="ljxfun2">
+                                <div class="datagrid-btn-separator"></div>
+                                <a class="easyui-linkbutton" iconcls="icon-edit1" plain="true" onclick="edit()">编辑</a>
+                            </td>
+                            <td id="ljxfun3">
+                                <div class="datagrid-btn-separator"></div>
+                                <a class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del()">删除</a>
+                            </td>
+                            <td> 
+                                <div class="datagrid-btn-separator"></div>   &nbsp;  <a  class="easyui-linkbutton" iconcls="icon-pencil" plain="true"  onclick="InitGird(1)">显示全部</a> 
+                            </td>
+
+                        </tr>
+                    </table>
+                           
+                </td>
+                <td style="text-align: right; padding-right: 2px"  id="ljxfun4">
+                      <input id="ipt_search" menu="#search_menu" />
+                    <div id="search_menu" style="width:120px">
+                        <div name="userName">
+                            人员名称</div>
+                        <div name="account">
+                            帐号</div>
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="div2" style="width: 100.5%">         
+        <table id="tab_list"  style="height: auto" >
+        </table>         
+    </div>
+     
+    <div id="ljxwin" icon="icon-save" style="padding: 5px; width: 460px;">
+        <div id="divU">
+            <table cellpadding="0" cellspacing="1px" border="0" style="width: 100%;" bgcolor="b5d6e6">
+                <tr style="background-color: White; height: 32px;">
+                    <td style="width: 80px; padding-left: 5px">
+                        人员名称
+                    </td>
+                    <td style="padding: 5px">
+                        <input id="userName" type="text" style="border: 1px solid #8DB2E3; width: 200px; height: 20px" />
+                    </td>
+                </tr>
+                <tr style="background-color: White; height: 32px;">
+                    <td style="width: 80px; padding-left: 5px">
+                        帐号
+                    </td>
+                    <td style="padding: 5px">
+                        <input id="account" type="text" style="border: 1px solid #8DB2E3; width: 200px; height: 20px" />
+                    </td>
+                </tr>
+                <tr style="background-color: White; height: 32px;">
+                    <td style="width: 80px; padding-left: 5px">
+                        密码
+                    </td>
+                    <td style="padding: 5px">
+                        <input id="password" type="text" style="border: 1px solid #8DB2E3; width: 200px; height: 20px" />
+                    </td>
+                </tr>
+                <tr style="background-color: White; height: 32px;">
+                    <td style="width: 80px; padding-left: 5px">
+                        联系电话
+                    </td>
+                    <td style="padding: 5px">
+                        <input id="phone" type="text" style="border: 1px solid #8DB2E3; width: 200px; height: 20px" />
+                    </td>
+                </tr>
+                <tr style="background-color: White; height: 32px;">
+                    <td style="width: 80px; padding-left: 5px">
+                        性别
+                    </td>
+                    <td style="padding: 5px">
+                        <input id="gender" type="text" style="border: 1px solid #8DB2E3; width: 200px; height: 20px" />
+                    </td>
+                </tr>
+                <tr style="background-color: White; height: 32px;">
+                    <td style="width: 80px; padding-left: 5px">
+                        类别
+                    </td>
+                    <td style="padding: 5px">
+                        <input id="category" type="text" style="border: 1px solid #8DB2E3; width: 200px; height: 20px" />
+                    </td>
+                </tr>
+                <tr style="background-color: White; height: 32px;">
+                    <td style="width: 80px; padding-left: 5px">
+                        角色
+                    </td>
+                    <td style="padding: 5px">
+                        <input id="role" type="text" style="border: 1px solid #8DB2E3; width: 200px; height: 20px" />
+                    </td>
+                </tr>
+                <tr style="background-color: White; height: 32px;">
+                    <td style="width: 80px; padding-left: 5px">
+                        new1
+                    </td>
+                    <td style="padding: 5px">
+                        <input id="new1" type="text" style="border: 1px solid #8DB2E3; width: 200px; height: 20px" />
+                    </td>
+                </tr>
+                <tr style="background-color: White; height: 32px;">
+                    <td style="width: 80px; padding-left: 5px">
+                        new2
+                    </td>
+                    <td style="padding: 5px">
+                        <input id="new2" type="text" style="border: 1px solid #8DB2E3; width: 200px; height: 20px" />
+                    </td>
+                </tr>
+                 
+            </table>
+        </div>
+        <div region="south" border="false" style="text-align: right; height: 24px; line-height: 24px;">
+            <a id="A3" class="easyui-linkbutton" onclick="saveData()" icon="icon-ok" href="javascript:void(0)">
+                确定</a> <a id="A4" class="easyui-linkbutton" onclick="closeljxwin()" icon="icon-cancel"
+                    href="javascript:void(0)">取消</a>
+        </div>
+    </div>
+    </form>
+</body>
+</html>
